@@ -49,7 +49,7 @@ public class WebClient {
         System.out.println(line);
       }
     } catch (UnknownHostException ex) {
-      System.out.println("Server not found: " + ex.getMessage());
+      System.out.println("Server not founddddd: " + ex.getMessage());
     } catch (IOException ex) {
       System.out.println("I/O error: " + ex.getMessage());
     }
