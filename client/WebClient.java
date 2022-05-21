@@ -25,7 +25,7 @@ public class WebClient {
 
     // String hostname = url.getHost();
     String hostname = args[0];
-    int port = 80;
+    int port = 8080;
 
     try (Socket socket = new Socket(hostname, port)) {
       OutputStream output = socket.getOutputStream();
