@@ -14,9 +14,10 @@ public class WebServer {
     while (true) {
       try (Socket socket = server.accept()) {
         Date today = new Date();
-        String httpResponse = "HTTP/1.1 200 OK\r\n\r\n" + today;
+        String httpResponse = ("Sie haben sich mit dem Server um " + today + " Verbunden");
         socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
         //server.close();
+        System.out.println("Verbundener CLient: " + socket.getInetAddress().getHostAddress());
       }
     }
   }
