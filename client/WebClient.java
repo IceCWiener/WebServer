@@ -35,7 +35,7 @@ public class WebClient {
 
     try (Socket socket = new Socket(hostname, port)) {
       System.out.println("Socket connected to: " + hostname + " " + port);
-      PrintStream output = new PrintStream(socket.getOutputStream());
+      DataOutputStream output = new DataOutputStream(socket.getOutputStream());
       // PrintWriter writer = new PrintWriter(output, true);
 
       //writer.println("HEAD " + url.getPath() + " HTTP/1.1");
@@ -71,11 +71,11 @@ public class WebClient {
 
       //TEST
       String message = createMessage(RequestTypes.GET, "/", "{test: test}");
-      System.out.println(
-        "Created request message: " + message + " END MESSAGE"
-      );
+      // System.out.println(
+      //   "Created request message: " + message + " END MESSAGE"
+      // );
 
-      output.println(message);
+      output.writeUTF("message");
       output.close();
       socket.close();
       System.out.println("OutputPrintStream and Socket closed.");
