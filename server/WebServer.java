@@ -2,6 +2,7 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,9 +28,12 @@ public class WebServer {
         // System.out.println(
         //   "Verbundener Client: " + client.getInetAddress().getHostAddress()
         // );
-
         DataInputStream input = new DataInputStream(client.getInputStream());
         System.out.println(input.readUTF());
+        DataOutputStream output = new DataOutputStream(
+          client.getOutputStream()
+        );
+        output.writeUTF("message from the server");
         // PrintStream printStream = new PrintStream(socket.getOutputStream());
         // Scanner sc = new Scanner(input);
         // while (sc.hasNextLine()) {

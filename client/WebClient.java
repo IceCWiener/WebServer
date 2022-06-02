@@ -76,6 +76,8 @@ public class WebClient {
       // );
 
       output.writeUTF(message);
+      DataInputStream input = new DataInputStream(socket.getInputStream());
+      System.out.println(input.readUTF());
       // output.close();
       socket.close();
       System.out.println("OutputPrintStream and Socket closed.");
