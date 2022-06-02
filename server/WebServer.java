@@ -20,27 +20,21 @@ public class WebServer {
     System.out.println("Listening for connection on port 8080 ....");
     while (true) {
       try (Socket client = server.accept()) {
-        // Date today = new Date();
-        // String httpResponse =
-        //   ("Sie haben sich mit dem Server um " + today + " Verbunden");
-        // client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
-        // //server.close();
-        // System.out.println(
-        //   "Verbundener Client: " + client.getInetAddress().getHostAddress()
-        // );
+        Date today = new Date();
+        System.out.println(
+          "Verbundener Client: " + client.getInetAddress().getHostAddress()
+        );
+
         DataInputStream input = new DataInputStream(client.getInputStream());
         System.out.println(input.readUTF());
+
         DataOutputStream output = new DataOutputStream(
           client.getOutputStream()
         );
-        output.writeUTF("message from the server");
-        // PrintStream printStream = new PrintStream(socket.getOutputStream());
-        // Scanner sc = new Scanner(input);
-        // while (sc.hasNextLine()) {
-        //   System.out.println(sc.nextLine());
-        //   printStream.println(sc.nextLine());
-        // }
-        // sc.close();
+        String httpResponse =
+          ("Sie haben sich mit dem Server um " + today + " Verbunden");
+        output.writeUTF(httpResponse);
+
         client.close();
       }
     }

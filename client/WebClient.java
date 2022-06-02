@@ -21,66 +21,19 @@ public class WebClient {
       hostname = args[0];
     }
 
-    // URL url;
-
-    // try {
-    //   url = new URL(args[0]);
-    // } catch (MalformedURLException ex) {
-    //   ex.printStackTrace();
-    //   return;
-    // }
-
-    // String hostname = url.getHost();
     int port = 8080;
 
     try (Socket socket = new Socket(hostname, port)) {
       System.out.println("Socket connected to: " + hostname + " " + port);
+
       DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-      // PrintWriter writer = new PrintWriter(output, true);
-
-      //writer.println("HEAD " + url.getPath() + " HTTP/1.1");
-      // writer.println("Host: " + hostname);
-      // writer.println("User-Agent: Simple Http Client");
-      // writer.println("Accept: text/html");
-      // writer.println("Accept-Language: en-US");
-      // writer.println("Connection: close");
-      // writer.println();
-
-      // System.out.println(
-      //   "Setting up print of InputStream and Scanner. Message:"
-      // );
-      // InputStream inputStream = socket.getInputStream();
-      // Scanner sc = new Scanner(inputStream);
-      // while (sc.hasNextLine()) {
-      //   System.out.println(sc.nextLine());
-      // }
-      // sc.close();
-      // System.out.println("Scanner closed");
-
-      // BufferedReader reader = new BufferedReader(
-      //   new InputStreamReader(inputStream)
-      // );
-      // String readLine = reader.readLine();
-      // System.out.println(readLine);
-
-      // String line;
-
-      // while ((line = reader.readLine()) != null) {
-      //   System.out.println(line);
-      // }
-
-      //TEST
       String message = createMessage(RequestTypes.GET, "/", "{test: test}");
-      // System.out.println(
-      //   "Created request message: " + message + " END MESSAGE"
-      // );
-
       output.writeUTF(message);
+
       DataInputStream input = new DataInputStream(socket.getInputStream());
       System.out.println(input.readUTF());
-      // output.close();
+
       socket.close();
-      System.out.println("OutputPrintStream and Socket closed.");
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
     } catch (IOException ex) {
