@@ -8,7 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
-/** * Java program to create a simple HTTP Server to demonstrate how to use * ServerSocket and Socket class. * * @author Javin Paul */
+import javax.management.relation.RelationException;
+
+
 public class WebServer {
 
   public static void main(String args[]) throws IOException {
@@ -29,9 +31,10 @@ public class WebServer {
           new InputStreamReader(input)
         );
 
-        String line;
+        String line = reader.readLine();
 
-        while ((line = reader.readLine()) != null) {
+        while (line != null) 
+        {
           System.out.println(line);
         }
       }
