@@ -12,7 +12,13 @@ import java.net.*;
 public class WebClient {
 
   public static void main(String[] args) {
-    if (args.length < 1) return;
+    String hostname;
+
+    if (args.length < 1) {
+      hostname = "localhost";
+    } else {
+      hostname = args[0];
+    }
 
     // URL url;
 
@@ -24,7 +30,6 @@ public class WebClient {
     // }
 
     // String hostname = url.getHost();
-    String hostname = args[0];
     int port = 8080;
 
     try (Socket socket = new Socket(hostname, port)) {
@@ -45,13 +50,57 @@ public class WebClient {
 
       String line;
 
-      while ((line = reader.readLine()) != null) {
-        System.out.println(line);
-      }
+      // while ((line = reader.readLine()) != null) {
+      //   System.out.println(line);
+      // }
+
+      //TEST
+      String message = createMessage(RequestTypes.GET, "/", "{test: test}");
+      System.out.println(message);
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
     } catch (IOException ex) {
       System.out.println("I/O error: " + ex.getMessage());
     }
+  }
+
+  public static String createMessage(
+    RequestTypes requestType,
+    String path,
+    String body
+  ) {
+    String head = "";
+    String request;
+    String protocol = "HTTP/1.1";
+
+    switch (requestType) {
+      case GET:
+        head = head + "GET";
+        break;
+      case DELETE:
+        head = head + "DELETE";
+        break;
+      case POST:
+        head = head + "POST";
+        break;
+      case PUT:
+        head = head + "PUT";
+        break;
+      default:
+        break;
+    }
+
+    head += " " + path + ":" + protocol + "\n" + body;
+    request = head + body;
+
+    System.out.println(request);
+    return request;
+  }
+
+  enum RequestTypes {
+    GET,
+    POST,
+    PUT,
+    DELETE,
   }
 }
