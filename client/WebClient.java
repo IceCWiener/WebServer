@@ -93,7 +93,6 @@ public class WebClient {
     head += " " + path + ":" + protocol + "\n" + body;
     request = head + body;
 
-    System.out.println(request);
     return request;
   }
 
