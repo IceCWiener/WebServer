@@ -2,6 +2,7 @@ package client;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 /**
  * This program demonstrates a client socket application that connects to
@@ -33,22 +34,36 @@ public class WebClient {
     int port = 8080;
 
     try (Socket socket = new Socket(hostname, port)) {
-      OutputStream output = socket.getOutputStream();
-      PrintWriter writer = new PrintWriter(output, true);
+      System.out.println("Socket connected to: " + hostname + " " + port);
+      PrintStream output = new PrintStream(socket.getOutputStream());
+      // PrintWriter writer = new PrintWriter(output, true);
 
       //writer.println("HEAD " + url.getPath() + " HTTP/1.1");
-      writer.println("Host: " + hostname);
-      writer.println("User-Agent: Simple Http Client");
-      writer.println("Accept: text/html");
-      writer.println("Accept-Language: en-US");
-      writer.println("Connection: close");
-      writer.println();
+      // writer.println("Host: " + hostname);
+      // writer.println("User-Agent: Simple Http Client");
+      // writer.println("Accept: text/html");
+      // writer.println("Accept-Language: en-US");
+      // writer.println("Connection: close");
+      // writer.println();
 
-      InputStream input = socket.getInputStream();
+      // System.out.println(
+      //   "Setting up print of InputStream and Scanner. Message:"
+      // );
+      // InputStream inputStream = socket.getInputStream();
+      // Scanner sc = new Scanner(inputStream);
+      // while (sc.hasNextLine()) {
+      //   System.out.println(sc.nextLine());
+      // }
+      // sc.close();
+      // System.out.println("Scanner closed");
 
-      BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+      // BufferedReader reader = new BufferedReader(
+      //   new InputStreamReader(inputStream)
+      // );
+      // String readLine = reader.readLine();
+      // System.out.println(readLine);
 
-      String line;
+      // String line;
 
       // while ((line = reader.readLine()) != null) {
       //   System.out.println(line);
@@ -56,7 +71,14 @@ public class WebClient {
 
       //TEST
       String message = createMessage(RequestTypes.GET, "/", "{test: test}");
-      System.out.println(message);
+      System.out.println(
+        "Created request message: " + message + " END MESSAGE"
+      );
+
+      output.println(message);
+      output.close();
+      socket.close();
+      System.out.println("OutputPrintStream and Socket closed.");
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
     } catch (IOException ex) {

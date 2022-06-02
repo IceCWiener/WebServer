@@ -1,15 +1,16 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
-
+import java.util.Scanner;
 import javax.management.relation.RelationException;
-
 
 public class WebServer {
 
@@ -26,17 +27,16 @@ public class WebServer {
         System.out.println(
           "Verbundener Client: " + socket.getInetAddress().getHostAddress()
         );
-        InputStream input = socket.getInputStream();
-        BufferedReader reader = new BufferedReader(
-          new InputStreamReader(input)
-        );
 
-        String line = reader.readLine();
-
-        while (line != null) 
-        {
-          System.out.println(line);
-        }
+        DataInputStream input = new DataInputStream(socket.getInputStream());
+        System.out.println(input.readUTF());
+        // PrintStream printStream = new PrintStream(socket.getOutputStream());
+        // Scanner sc = new Scanner(input);
+        // while (sc.hasNextLine()) {
+        //   System.out.println(sc.nextLine());
+        //   printStream.println(sc.nextLine());
+        // }
+        // sc.close();
       }
     }
   }
