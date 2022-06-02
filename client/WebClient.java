@@ -2,7 +2,6 @@ package client;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 /**
  * This program demonstrates a client socket application that connects to
