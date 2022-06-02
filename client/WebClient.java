@@ -75,8 +75,8 @@ public class WebClient {
       //   "Created request message: " + message + " END MESSAGE"
       // );
 
-      output.writeUTF("message");
-      output.close();
+      output.writeUTF(message);
+      // output.close();
       socket.close();
       System.out.println("OutputPrintStream and Socket closed.");
     } catch (UnknownHostException ex) {

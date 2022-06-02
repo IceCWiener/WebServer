@@ -18,17 +18,17 @@ public class WebServer {
     ServerSocket server = new ServerSocket(8080);
     System.out.println("Listening for connection on port 8080 ....");
     while (true) {
-      try (Socket socket = server.accept()) {
-        Date today = new Date();
-        String httpResponse =
-          ("Sie haben sich mit dem Server um " + today + " Verbunden");
-        socket.getOutputStream().write(httpResponse.getBytes("UTF-8"));
-        //server.close();
-        System.out.println(
-          "Verbundener Client: " + socket.getInetAddress().getHostAddress()
-        );
+      try (Socket client = server.accept()) {
+        // Date today = new Date();
+        // String httpResponse =
+        //   ("Sie haben sich mit dem Server um " + today + " Verbunden");
+        // client.getOutputStream().write(httpResponse.getBytes("UTF-8"));
+        // //server.close();
+        // System.out.println(
+        //   "Verbundener Client: " + client.getInetAddress().getHostAddress()
+        // );
 
-        DataInputStream input = new DataInputStream(socket.getInputStream());
+        DataInputStream input = new DataInputStream(client.getInputStream());
         System.out.println(input.readUTF());
         // PrintStream printStream = new PrintStream(socket.getOutputStream());
         // Scanner sc = new Scanner(input);
@@ -37,6 +37,7 @@ public class WebServer {
         //   printStream.println(sc.nextLine());
         // }
         // sc.close();
+        client.close();
       }
     }
   }
