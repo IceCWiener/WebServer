@@ -4,11 +4,9 @@ import java.io.*;
 import java.net.*;
 
 /**
- * This program demonstrates a client socket application that connects to
- * a web server and send a HTTP HEAD request.
- *
- * @author www.codejava.net
+ * @author Gerasimos Strecker & Konstantin Regenhardt
  */
+
 public class WebClient {
 
   public static void main(String[] args) {
@@ -23,10 +21,10 @@ public class WebClient {
     int port = 8080;
 
     try (Socket socket = new Socket(hostname, port)) {
-      System.out.println("Socket connected to: " + hostname + " " + port);
+      System.out.println("\nSocket connected to: " + hostname + " " + port);
 
       DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-      String message = createMessage(RequestTypes.GET, "/", "{test: test}");
+      String message = createMessage("GET", "/", "{test: test}");
       output.writeUTF(message);
 
       DataInputStream input = new DataInputStream(socket.getInputStream());
@@ -40,26 +38,22 @@ public class WebClient {
     }
   }
 
-  public static String createMessage(
-    RequestTypes requestType,
-    String path,
-    String body
-  ) {
+  public static String createMessage(String crud, String path, String body) {
     String head = "";
     String request;
     String protocol = "HTTP/1.1";
 
-    switch (requestType) {
-      case GET:
+    switch (crud) {
+      case "GET":
         head = head + "GET";
         break;
-      case DELETE:
+      case "DELETE":
         head = head + "DELETE";
         break;
-      case POST:
+      case "POST":
         head = head + "POST";
         break;
-      case PUT:
+      case "PUT":
         head = head + "PUT";
         break;
       default:
@@ -70,12 +64,5 @@ public class WebClient {
     request = head + body;
 
     return request;
-  }
-
-  enum RequestTypes {
-    GET,
-    POST,
-    PUT,
-    DELETE,
   }
 }

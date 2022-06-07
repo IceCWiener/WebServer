@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import com.google.gson.Gson;
+
+/**
+ * @author Gerasimos Strecker & Konstantin Regenhardt
+ */
 
 public class WebServer {
 
@@ -16,7 +21,7 @@ public class WebServer {
         try (Socket client = server.accept()) {
           Date today = new Date();
           System.out.println(
-            "Verbundener Client: " + client.getInetAddress().getHostAddress()
+            "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
           );
 
           DataInputStream input = new DataInputStream(client.getInputStream());
@@ -26,7 +31,7 @@ public class WebServer {
             client.getOutputStream()
           );
           String httpResponse =
-            ("Sie haben sich mit dem Server um " + today + " Verbunden");
+            ("Sie haben sich mit dem Server um " + today + " Verbunden\n");
           output.writeUTF(httpResponse);
 
           client.close();
