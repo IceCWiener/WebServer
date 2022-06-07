@@ -2,6 +2,9 @@ package client;
 
 import java.io.*;
 import java.net.*;
+import com.google.gson.Gson;
+
+import server.Person;
 
 /**
  * @author Gerasimos Strecker & Konstantin Regenhardt
@@ -13,7 +16,7 @@ public class WebClient {
     String hostname;
 
     if (args.length < 1) {
-      hostname = "localhost";
+      hostname = "141.45.62.167";
     } else {
       hostname = args[0];
     }
@@ -24,12 +27,17 @@ public class WebClient {
       System.out.println("\nSocket connected to: " + hostname + " " + port);
 
       DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-      String message = createMessage("GET", "/", "{test: test}");
+      String message = createHttpRequest("GET", "/", "{test: test}");
       output.writeUTF(message);
 
+      
       DataInputStream input = new DataInputStream(socket.getInputStream());
       System.out.println(input.readUTF());
 
+      Gson gson = new Gson();  
+      Person[] PersonArray = gson.fromJson(output.toString(), Person[].class); 
+      System.out.println(PersonArray);
+      
       socket.close();
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
@@ -37,8 +45,9 @@ public class WebClient {
       System.out.println("I/O error: " + ex.getMessage());
     }
   }
+  
 
-  public static String createMessage(String crud, String path, String body) {
+  public static String createHttpRequest(String crud, String path, String body) {
     String head = "";
     String request;
     String protocol = "HTTP/1.1";
