@@ -14,7 +14,9 @@ import java.util.Date;
  */
 
 public class WebServer {
-  private Person person = new Person("Claudia", 44);
+  private static Person person = new Person("Claudia", 44);
+  private static Person person2 = new Person("Clarence", 63);
+  private static Person[] people = { person, person2 };
 
   public static void main(String args[]) throws IOException {
     try (ServerSocket server = new ServerSocket(8080)) {
@@ -32,8 +34,8 @@ public class WebServer {
           DataOutputStream output = new DataOutputStream(
             client.getOutputStream()
           );
-          String httpResponse =
-            ("Sie haben sich mit dem Server um " + today + " Verbunden\n");
+          String httpResponse = constructJson(people);
+          // ("Sie haben sich mit dem Server um " + today + " Verbunden\n");
           output.writeUTF(httpResponse);
 
           client.close();
@@ -42,10 +44,11 @@ public class WebServer {
     }
   }
 
-  public String constructJson() {
+  public static String constructJson(Person[] people) {
     Gson gson = new Gson();
 
-    String json = gson.toJson(person);
+    String json = gson.toJson(people);
+    System.out.println(json);
     return json;
   }
 }
