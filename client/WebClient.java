@@ -1,9 +1,8 @@
 package client;
 
+import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
-import com.google.gson.Gson;
-
 import server.Person;
 
 /**
@@ -30,14 +29,13 @@ public class WebClient {
       String message = createHttpRequest("GET", "/", "{test: test}");
       output.writeUTF(message);
 
-      
       DataInputStream input = new DataInputStream(socket.getInputStream());
       System.out.println(input.readUTF());
 
-      Gson gson = new Gson();  
-      Person[] PersonArray = gson.fromJson(output.toString(), Person[].class); 
+      Gson gson = new Gson();
+      Person[] PersonArray = gson.fromJson(output.toString(), Person[].class);
       System.out.println(PersonArray);
-      
+
       socket.close();
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
@@ -45,9 +43,12 @@ public class WebClient {
       System.out.println("I/O error: " + ex.getMessage());
     }
   }
-  
 
-  public static String createHttpRequest(String crud, String path, String body) {
+  public static String createHttpRequest(
+    String crud,
+    String path,
+    String body
+  ) {
     String head = "";
     String request;
     String protocol = "HTTP/1.1";
