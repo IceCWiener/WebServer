@@ -16,7 +16,7 @@ public class WebClient {
     String hostname;
 
     if (args.length < 1) {
-      hostname = "141.45.62.167";
+      hostname = "localhost";
     } else {
       hostname = args[0];
     }
@@ -32,11 +32,13 @@ public class WebClient {
 
       
       DataInputStream input = new DataInputStream(socket.getInputStream());
-      System.out.println(input.readUTF());
+      //System.out.println(input.readUTF());
 
+      String testidk = input.readUTF();
+      //System.out.println(testidk);
       Gson gson = new Gson();  
-      Person[] PersonArray = gson.fromJson(output.toString(), Person[].class); 
-      System.out.println(PersonArray);
+      Person[] PersonArray = gson.fromJson(testidk, Person[].class); 
+      System.out.println(PersonArray[0].name);
       
       socket.close();
     } catch (UnknownHostException ex) {

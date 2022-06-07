@@ -7,6 +7,6 @@ public class Person {
     this.age = age;
   }
 
-  String name;
-  int age;
+  public String name;
+  public int age;
 }
