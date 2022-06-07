@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -29,13 +28,16 @@ public class WebServer {
           );
 
           DataInputStream input = new DataInputStream(client.getInputStream());
-          System.out.println(input.readUTF());
+          System.out.println("Request des Clients" + input.readUTF());
 
           DataOutputStream output = new DataOutputStream(
             client.getOutputStream()
           );
-          String httpResponse = constructJson(people);
-          // ("Sie haben sich mit dem Server um " + today + " Verbunden\n");
+          String httpResponse =
+            // "Sie haben sich mit dem Server um " +
+            // today +
+            // " Verbunden\n Antwort auf Ihren request:\n" +
+            constructJson(people);
           output.writeUTF(httpResponse);
 
           client.close();
