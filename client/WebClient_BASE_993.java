@@ -32,9 +32,12 @@ public class WebClient {
 
       
       DataInputStream input = new DataInputStream(socket.getInputStream());
-      
+      //System.out.println(input.readUTF());
+
+      String testidk = input.readUTF();
+      //System.out.println(testidk);
       Gson gson = new Gson();  
-      Person[] PersonArray = gson.fromJson(input.readUTF(), Person[].class); 
+      Person[] PersonArray = gson.fromJson(testidk, Person[].class); 
       System.out.println(PersonArray[0].name);
       
       socket.close();
