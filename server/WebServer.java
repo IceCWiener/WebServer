@@ -18,6 +18,7 @@ public class WebServer {
   private static Person[] people = { person, person2 };
 
   public static void main(String args[]) throws IOException {
+    constructJson(people, "msg");
     try (ServerSocket server = new ServerSocket(8080)) {
       System.out.println("Listening for connection on port 8080 ....");
       while (true) {
@@ -46,11 +47,15 @@ public class WebServer {
     }
   }
 
-  public static String constructJson(Person[] people) {
+  public static String constructJson(Person[] people, String... msg) {
     Gson gson = new Gson();
-
-    String json = gson.toJson(people);
-    System.out.println(json);
+    String msgJson = gson.toJson(msg);
+    String peopleJson = gson.toJson(people);
+    String json = gson.toJson(peopleJson + ", " + msgJson);
     return json;
+  }
+
+  public String receiveRequest(String json) {
+    return "";
   }
 }
