@@ -1,0 +1,99 @@
+input
+{
+    padding: 15px;
+    height: 1em;
+    min-width: 20px;
+}
+#outterWrapper
+{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    position: absolute;
+}
+
+#wrapper
+{
+    /*
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all 0.5s ease-in-out;
+    -webkit-transition: all 0.5s ease-in-out;
+    background-color: lightgoldenrodyellow;
+    padding: 15px;
+    border-radius: 15px;
+}
+#box
+{
+    margin: 0 50px;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+.rows
+{
+    display: flex;
+    gap: 15px;
+
+}
+.rowElement
+{
+    display: flex;
+    flex-direction: column;
+}
+input, select, #button, #containerHTML 
+{
+    box-shadow: 5px 5px 7px rgb(171, 171, 171);
+    border-radius: 15px;
+    font-size: 2em;
+}
+
+#Methods, #jsonXML, #button
+{
+    height: 2em;
+}
+#button
+{
+    width: 150px;
+    background-color: #e248c0;
+    align-self: baseline;
+}
+#containerHTML
+{
+    background-color: lightgoldenrodyellow;
+    width: calc(40%);
+    height: 4em;
+    opacity: 1;
+    padding: 15px;
+}
+#protocolInput, #acceptInput
+{
+    background-color: white;
+}
+
+body
+{
+    background-color: antiquewhite;
+    background: url(https://cdn.dribbble.com/users/652916/screenshots/1925630/explosion_01_dribbble.gif);
+    overflow: hidden;
+}
+.disabled
+{
+    display: none;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+*{
+    font-family: monospace, monospace;
+}
+.empty{
+    flex-grow: 1;
+}
