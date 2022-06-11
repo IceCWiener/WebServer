@@ -1,10 +1,19 @@
 $(document).ready(function () {
   console.log("stop inspecting element");
-  var receivedHTML = "Platzhalter";
   $("#button").on("click", function () {
+    var method = document.getElementById("Methods").value;
+    var path = document.getElementById("pathInput").value;
+    var protocol = document.getElementById("protocolInput").value;
+    var accept = document.getElementById("acceptInput").value;
+    var format = document.getElementById("jsonXML").value;
+    var urlInput = document.getElementById("host").value;
     document.getElementById("containerHTML").focus();
-    $("#containerHTML").text(createRequest());
+    $("#containerHTML").text(createRequest(urlInput));
     $("#containerHTML").removeClass("disabled");
+    var url = new URL("ws://" + urlInput + ":8080");
+    console.log(url);
+    var socket = new WebSocket(url);
+   // socket.send(createRequest(method, path, urlInput, protocol, accept, format));
   });
   $("input").each(function () {
     var input = this; // This is the jquery object of the input, do what you will
@@ -19,13 +28,7 @@ $(document).ready(function () {
       this.style.width = this.value.length + "ch";
     }
   }
-  function createRequest() {
-    var method = document.getElementById("Methods").value;
-    var path = document.getElementById("pathInput").value;
-    var urlInput = document.getElementById("host").value;
-    var protocol = document.getElementById("protocolInput").value;
-    var accept = document.getElementById("acceptInput").value;
-    var format = document.getElementById("jsonXML").value;
+  function createRequest(method, path, urlInput, protocol, accept, format) {
     var combined = {
       method: method,
       path: path,

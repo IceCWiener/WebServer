@@ -86,8 +86,8 @@ input, select, #button, #containerHTML
 body
 {
     background-color: antiquewhite;
-    background: url(https://cdn.dribbble.com/users/652916/screenshots/1925630/explosion_01_dribbble.gif);
-    overflow: hidden;
+    /*background: url(https://cdn.dribbble.com/users/652916/screenshots/1925630/explosion_01_dribbble.gif);
+    */
 }
 .disabled
 {
