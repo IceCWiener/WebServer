@@ -30,7 +30,6 @@ public class WebClient {
       String message = createHttpRequest("GET", "/", "{test: test}");
       output.writeUTF(message);
 
-      
       DataInputStream input = new DataInputStream(socket.getInputStream());
       
       Gson gson = new Gson();  
@@ -44,9 +43,12 @@ public class WebClient {
       System.out.println("I/O error: " + ex.getMessage());
     }
   }
-  
 
-  public static String createHttpRequest(String crud, String path, String body) {
+  public static String createHttpRequest(
+    String crud,
+    String path,
+    String body
+  ) {
     String head = "";
     String request;
     String protocol = "HTTP/1.1";

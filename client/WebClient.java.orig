@@ -1,7 +1,8 @@
-package client;
 
+import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
+import server.Person;
 
 /**
  * @author Gerasimos Strecker & Konstantin Regenhardt
@@ -24,20 +25,25 @@ public class WebClient {
       System.out.println("\nSocket connected to: " + hostname + " " + port);
 
       DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-      String message = createMessage("GET", "/", "{test: test}");
+      String message = createHttpRequest("GET", "/", "{test: test}");
       output.writeUTF(message);
 
       DataInputStream input = new DataInputStream(socket.getInputStream());
-<<<<<<< Updated upstream
-      System.out.println(input.readUTF());
+      //System.out.println(input.readUTF());
+
+<<<<<<< HEAD
+      Gson gson = new Gson();
+      Person[] PersonArray = gson.fromJson(output.toString(), Person[].class);
+      System.out.println(PersonArray);
 
 =======
-      
+      String testidk = input.readUTF();
+      //System.out.println(testidk);
       Gson gson = new Gson();  
-      Person[] PersonArray = gson.fromJson(input.readUTF(), Person[].class); 
+      Person[] PersonArray = gson.fromJson(testidk, Person[].class); 
       System.out.println(PersonArray[0].name);
       
->>>>>>> Stashed changes
+>>>>>>> 9f71b5c16b6c727b8f5c2fc276364327773e2961
       socket.close();
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
@@ -46,7 +52,11 @@ public class WebClient {
     }
   }
 
-  public static String createMessage(String crud, String path, String body) {
+  public static String createHttpRequest(
+    String crud,
+    String path,
+    String body
+  ) {
     String head = "";
     String request;
     String protocol = "HTTP/1.1";
