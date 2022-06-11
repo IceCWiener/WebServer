@@ -24,20 +24,18 @@ public class WebServer {
         try (Socket client = server.accept()) {
           Date today = new Date();
           System.out.println(
-            "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
-          );
+              "\nVerbundener Client: " + client.getInetAddress().getHostAddress());
 
           DataInputStream input = new DataInputStream(client.getInputStream());
           System.out.println("Request des Clients" + input.readUTF());
 
           DataOutputStream output = new DataOutputStream(
-            client.getOutputStream()
-          );
+              client.getOutputStream());
           String httpResponse =
-            // "Sie haben sich mit dem Server um " +
-            // today +
-            // " Verbunden\n Antwort auf Ihren request:\n" +
-            constructJson(people);
+              // "Sie haben sich mit dem Server um " +
+              // today +
+              // " Verbunden\n Antwort auf Ihren request:\n" +
+              constructJson(people);
           output.writeUTF(httpResponse);
 
           client.close();
