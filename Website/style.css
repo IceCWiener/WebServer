@@ -55,6 +55,10 @@ input, select, #button, #containerHTML
     border-radius: 15px;
     font-size: 2em;
 }
+::placeholder
+{
+    color: lightgray;
+}
 
 #Methods, #jsonXML, #button
 {
