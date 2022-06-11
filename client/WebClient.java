@@ -1,9 +1,8 @@
 package client;
 
+import com.google.gson.Gson;
 import java.io.*;
 import java.net.*;
-import com.google.gson.Gson;
-
 import server.Person;
 
 /**
@@ -31,11 +30,12 @@ public class WebClient {
       output.writeUTF(message);
 
       DataInputStream input = new DataInputStream(socket.getInputStream());
-      
-      Gson gson = new Gson();  
-      Person[] PersonArray = gson.fromJson(input.readUTF(), Person[].class); 
-      System.out.println(PersonArray[0].name);
-      
+      String inputString = input.readUTF();
+
+      Gson gson = new Gson();
+      Person[] people = gson.fromJson(inputString, Person[].class);
+      System.out.println(people[0].name);
+
       socket.close();
     } catch (UnknownHostException ex) {
       System.out.println("Server not found: " + ex.getMessage());
