@@ -73,10 +73,12 @@ input, select, #button, #containerHTML
 #containerHTML
 {
     background-color: lightgoldenrodyellow;
-    width: calc(40%);
-    height: 4em;
+    width: calc(80%);
+    height: fit-content;
     opacity: 1;
     padding: 15px;
+    overflow-wrap: break-word;
+
 }
 #protocolInput, #acceptInput
 {

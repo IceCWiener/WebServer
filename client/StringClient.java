@@ -14,7 +14,7 @@ class StringClient {
   public static void main(String[] args) {
     Socket socket = null;
     try {
-      socket = new Socket("localhost", 3141);
+      socket = new Socket("192.168.0.24", 3141);
 
       OutputStream raus = socket.getOutputStream();
       PrintStream ps = new PrintStream(raus, true);

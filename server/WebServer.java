@@ -31,10 +31,13 @@ public class WebServer {
       );
       while (true) {
         try (Socket client = server.accept()) {
+          if (client.isConnected()){
+          }
           Date today = new Date();
           System.out.println(
             "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
           );
+          
 
           DataInputStream input = new DataInputStream(client.getInputStream());
           System.out.println("Request des Clients" + input.readUTF());
@@ -54,7 +57,7 @@ public class WebServer {
       }
     }
   }
-
+  
   private static String getLocalIp() throws SocketException {
     String localIp = null;
     String address;
