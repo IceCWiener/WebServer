@@ -8,12 +8,21 @@ $(document).ready(function () {
     var format = document.getElementById("jsonXML").value;
     var urlInput = document.getElementById("host").value;
     document.getElementById("containerHTML").focus();
-    $("#containerHTML").text(createRequest(urlInput));
+    $("#containerHTML").text(
+      createRequest(method, path, urlInput, protocol, accept, format)
+    );
     $("#containerHTML").removeClass("disabled");
     var url = new URL("ws://" + urlInput + ":8080");
     console.log(url);
     var socket = new WebSocket(url);
-   // socket.send(createRequest(method, path, urlInput, protocol, accept, format));
+    socket.onopen = (e) => {
+      open = true;
+      console.log("moin");
+    };
+    socket.send(
+      createRequest(method, path, urlInput, protocol, accept, format)
+    );
+    
   });
   $("input").each(function () {
     var input = this; // This is the jquery object of the input, do what you will
@@ -27,6 +36,9 @@ $(document).ready(function () {
     } else {
       this.style.width = this.value.length + "ch";
     }
+    //console.log($("#containerHTML")[0], $("#outterWrapper")[0].clientWidth);
+    $("#containerHTML")[0].clientWidth = $("#outterWrapper")[0].clientWidth;
+    //console.log($("#containerHTML")[0].style.width, $("#outterWrapper"));
   }
   function createRequest(method, path, urlInput, protocol, accept, format) {
     var combined = {
