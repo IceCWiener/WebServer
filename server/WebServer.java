@@ -1,10 +1,16 @@
 package server;
 
 import com.google.gson.Gson;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -28,8 +34,15 @@ public class WebServer {
   private static Person person1 = new Person("Claudia", 44);
   private static Person person2 = new Person("Clarence", 63);
   private static Person[] people = { person1, person2 };
+  private static String testHTML = "<!DOCTYPE html> <html> <head> <title>Verteilte Systeme</title> <meta name='keywords' content='Vortrag' /> <link rel='stylesheet' href='style.css' /> <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script> <style> input { padding: 15px; height: 1em; min-width: 20px; } #outterWrapper { display: flex; flex-direction: column; height: 100%; width: 100%; justify-content: space-evenly; align-items: center; position: absolute; }#wrapper { /* top: 50%; left: 50%; transform: translate(-50%, -50%); */ display: flex; flex-direction: column; gap: 20px; transition: all 0.5s ease-in-out; -webkit-transition: all 0.5s ease-in-out; background-color: lightgoldenrodyellow; padding: 15px; border-radius: 15px; } #box { margin: 0 50px; display: flex; flex-direction: column; width: fit-content; } .rows { display: flex; gap: 15px; } .rowElement { display: flex; flex-direction: column; } input, select, #button, #containerHTML { box-shadow: 5px 5px 7px rgb(171, 171, 171); border-radius: 15px; font-size: 2em; } ::placeholder { color: lightgray; }#Methods, #jsonXML, #button { height: 2em; } #button { width: 150px; background-color: #e248c0; align-self: baseline; } #containerHTML { background-color: lightgoldenrodyellow; width: calc(80%); height: fit-content; opacity: 1; padding: 15px; overflow-wrap: break-word; } #protocolInput, #acceptInput { background-color: white; }body { background-color: antiquewhite; /*background: url(https://cdn.dribbble.com/users/652916/screenshots/1925630/explosion_01_dribbble.gif); */ } .disabled { display: none; transition: opacity 0.5s ease-in-out; opacity: 0; } * { font-family: monospace, monospace; } .empty { flex-grow: 1; } </style> </head> <body> <div id='outterWrapper'> <div id='wrapper'> <h1 id='header'>Header:</h1> <div id='box'> <div class='rows'> <div class='rowElement'> <h1>Crud:</h1> <select name='Methods' id='Methods'> <!--<option value='' disabled selected>GET</option>--> <option value='GET'>GET</option> <option value='POST'>POST</option> <option value='POST'>PUT</option> <option value='POST'>DELETE</option> </select> </div> <div class='rowElement'> <h1>Path:</h1> <input type='text' placeholder='/<your Path>' id='pathInput' /> </div> </div> <div class='rows'> <div class='rowElement'> <h1>Host:</h1> <input type='text' id='host' placeholder='enter URL' /> </div> <div class='rowElement'> <h1>Protocol:</h1> <input type='text' value='HTTP/1.1' id='protocolInput' disabled /> </div> </div> <div class='rows'> <div class='rowElement'> <h1>Accept:</h1> <input type='text' value='application/' id='acceptInput' disabled /> </div> <div class='rowElement'> <h1>Format:</h1> <select id='jsonXML'> <option value='json'>JSON</option> <option value='xml'>XML</option> </select> </div> <div class='rowElement'> <h1 class='empty'></h1> <button id='button'>GO</button> </div> </div> </div> </div> <div id='containerHTML' class='disabled'></div> </div> </body> <script type='text/javascript'> $(document).ready(function () { console.log('stop inspecting element'); $('#button').on('click', function () { var method = document.getElementById('Methods').value; var path = document.getElementById('pathInput').value; var protocol = document.getElementById('protocolInput').value; var accept = document.getElementById('acceptInput').value; var format = document.getElementById('jsonXML').value; var urlInput = document.getElementById('host').value; document.getElementById('containerHTML').focus(); $('#containerHTML').text( createRequest(method, path, urlInput, protocol, accept, format) ); $('#containerHTML').removeClass('disabled');var url = new URL('ws://' + urlInput + ':8080');console.log(url); var socket = new WebSocket(url); console.log('socket:' + socket);console.log(socket.data);socket.onopen = function (e) { open = true; console.log('test'); socket.send( createRequest(method, path, urlInput, protocol, accept, format) ); };socket.onmessage = function (ev) { alert(ev.data); }; }); $('input').each(function () { var input = this; /* This is the jquery object of the input, do what you will*/ input.addEventListener('input', resizeInput); /* bind the 'resizeInput' callback on 'input' event*/ resizeInput.call(input); /* immediately call the function*/ });function resizeInput() { if (this.value.length == 0) { this.style.width = this.placeholder.length + 'ch'; } else { this.style.width = this.value.length + 'ch'; } /*console.log($('#containerHTML')[0], $('#outterWrapper')[0].clientWidth);*/ $('#containerHTML')[0].clientWidth = $('#outterWrapper')[0].clientWidth; /*console.log($('#containerHTML')[0].style.width, $('#outterWrapper'));*/ } function createRequest(method, path, urlInput, protocol, accept, format) { var combined = { method: method, path: path, urlInput: urlInput, protocol: protocol, accept: accept, format: format, }; return JSON.stringify(combined); } }); </script> </html> ";
+  private static String content;
+  private static String method;
+  private static String path;
+  private static String version;
+  private static String host;
 
   public static void main(String args[]) throws IOException {
+
     try (ServerSocket server = new ServerSocket(8080)) {
       System.out.println(
           "Listening for connection on:\n " +
@@ -120,7 +133,7 @@ public class WebServer {
   private static void handleClient(Socket client) throws IOException {
     System.out.println("Debug: got new client " + client.toString());
     BufferedReader br = new BufferedReader(
-        new InputStreamReader(client.getInputStream()));
+        new InputStreamReader(client.getInputStream(), "utf-8"));
 
     StringBuilder requestBuilder = new StringBuilder();
     String line;
@@ -129,19 +142,42 @@ public class WebServer {
     }
 
     String request = requestBuilder.toString();
-    System.out.println(request);
+    // System.out.println(request);
+    String[] requestsLines = request.split("\r\n");
+    String[] requestLine = requestsLines[0].split(" ");
+    method = requestLine[0];
+    path = requestLine[1];
+    version = requestLine[2];
+    host = requestsLines[1].split(" ")[1];
   }
 
   public static void sendOutput(Socket client) throws IOException {
-    OutputStream clientOutput = client.getOutputStream();
-    clientOutput.write("HTTP/1.1 200 OK\r\n".getBytes());
-    clientOutput.write(("ContentType: text/html\r\n").getBytes());
-    clientOutput.write("\r\n".getBytes());
-    clientOutput.write(
-        "<!DOCTYPE html> <html> <head> <title>Verteilte Systeme</title> <meta name='keywords' content='Vortrag' /> <link rel='stylesheet' href='style.css' /> <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script> <style> input { padding: 15px; height: 1em; min-width: 20px; } #outterWrapper { display: flex; flex-direction: column; height: 100%; width: 100%; justify-content: space-evenly; align-items: center; position: absolute; }#wrapper { /* top: 50%; left: 50%; transform: translate(-50%, -50%); */ display: flex; flex-direction: column; gap: 20px; transition: all 0.5s ease-in-out; -webkit-transition: all 0.5s ease-in-out; background-color: lightgoldenrodyellow; padding: 15px; border-radius: 15px; } #box { margin: 0 50px; display: flex; flex-direction: column; width: fit-content; } .rows { display: flex; gap: 15px; } .rowElement { display: flex; flex-direction: column; } input, select, #button, #containerHTML { box-shadow: 5px 5px 7px rgb(171, 171, 171); border-radius: 15px; font-size: 2em; } ::placeholder { color: lightgray; }#Methods, #jsonXML, #button { height: 2em; } #button { width: 150px; background-color: #e248c0; align-self: baseline; } #containerHTML { background-color: lightgoldenrodyellow; width: calc(80%); height: fit-content; opacity: 1; padding: 15px; overflow-wrap: break-word; } #protocolInput, #acceptInput { background-color: white; }body { background-color: antiquewhite; /*background: url(https://cdn.dribbble.com/users/652916/screenshots/1925630/explosion_01_dribbble.gif); */ } .disabled { display: none; transition: opacity 0.5s ease-in-out; opacity: 0; } * { font-family: monospace, monospace; } .empty { flex-grow: 1; } </style> </head> <body> <div id='outterWrapper'> <div id='wrapper'> <h1 id='header'>Header:</h1> <div id='box'> <div class='rows'> <div class='rowElement'> <h1>Crud:</h1> <select name='Methods' id='Methods'> <!--<option value='' disabled selected>GET</option>--> <option value='GET'>GET</option> <option value='POST'>POST</option> <option value='POST'>PUT</option> <option value='POST'>DELETE</option> </select> </div> <div class='rowElement'> <h1>Path:</h1> <input type='text' placeholder='/<your Path>' id='pathInput' /> </div> </div> <div class='rows'> <div class='rowElement'> <h1>Host:</h1> <input type='text' id='host' placeholder='enter URL' /> </div> <div class='rowElement'> <h1>Protocol:</h1> <input type='text' value='HTTP/1.1' id='protocolInput' disabled /> </div> </div> <div class='rows'> <div class='rowElement'> <h1>Accept:</h1> <input type='text' value='application/' id='acceptInput' disabled /> </div> <div class='rowElement'> <h1>Format:</h1> <select id='jsonXML'> <option value='json'>JSON</option> <option value='xml'>XML</option> </select> </div> <div class='rowElement'> <h1 class='empty'></h1> <button id='button'>GO</button> </div> </div> </div> </div> <div id='containerHTML' class='disabled'></div> </div> </body> <script type='text/javascript'> $(document).ready(function () { console.log('stop inspecting element'); $('#button').on('click', function () { var method = document.getElementById('Methods').value; var path = document.getElementById('pathInput').value; var protocol = document.getElementById('protocolInput').value; var accept = document.getElementById('acceptInput').value; var format = document.getElementById('jsonXML').value; var urlInput = document.getElementById('host').value; document.getElementById('containerHTML').focus(); $('#containerHTML').text( createRequest(method, path, urlInput, protocol, accept, format) ); $('#containerHTML').removeClass('disabled');var url = new URL('ws://' + urlInput + ':8080');console.log(url); var socket = new WebSocket(url); console.log('socket:' + socket);console.log(socket.data);socket.onopen = function (e) { open = true; console.log('test'); socket.send( createRequest(method, path, urlInput, protocol, accept, format) ); };socket.onmessage = function (ev) { alert(ev.data); }; }); $('input').each(function () { var input = this; /* This is the jquery object of the input, do what you will*/ input.addEventListener('input', resizeInput); /* bind the 'resizeInput' callback on 'input' event*/ resizeInput.call(input); /* immediately call the function*/ });function resizeInput() { if (this.value.length == 0) { this.style.width = this.placeholder.length + 'ch'; } else { this.style.width = this.value.length + 'ch'; } /*console.log($('#containerHTML')[0], $('#outterWrapper')[0].clientWidth);*/ $('#containerHTML')[0].clientWidth = $('#outterWrapper')[0].clientWidth; /*console.log($('#containerHTML')[0].style.width, $('#outterWrapper'));*/ } function createRequest(method, path, urlInput, protocol, accept, format) { var combined = { method: method, path: path, urlInput: urlInput, protocol: protocol, accept: accept, format: format, }; return JSON.stringify(combined); } }); </script> </html> "
-            .getBytes());
-    clientOutput.write("\r\n\r\n".getBytes());
-    clientOutput.flush();
+    File file = new File("web");
+    InputStream is = new BufferedInputStream(new FileInputStream(file));
+    BufferedOutputStream out = new BufferedOutputStream(client.getOutputStream());
+    int bytesRead;
+    byte[] buffer = new byte[8192];
+    while ((bytesRead = is.read(buffer)) != -1) {
+      out.write(buffer, 0, bytesRead);
+    }
+    out.flush();
     client.close();
+
+    // OutputStream clientOutput = client.getOutputStream();
+    // clientOutput.write("HTTP/1.1 200 OK\r\n".getBytes());
+    // clientOutput.write(("ContentType: text/html\r\n").getBytes());
+    // clientOutput.write("\r\n".getBytes());
+    // clientOutput.write(testHTML.getBytes());
+    // clientOutput.write("\r\n\r\n".getBytes());
+    // clientOutput.flush();
+    // client.close();
+  }
+
+  public static void createContent() {
+    if (method == "GET") {
+      content = testHTML;
+    } else if (method == "POST") {
+      content = "test";
+    }
   }
 }
