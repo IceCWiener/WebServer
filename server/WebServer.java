@@ -49,13 +49,12 @@ public class WebServer {
         try (Socket client = server.accept()) {
           if (client.isConnected()) {}
           // Date today = new Date();
-          // System.out.println(
-          //   "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
-          // );
+          System.out.println(
+            "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
+          );
 
           handleClient(client);
-          System.out.println("Send Output:");
-          sendOutput(client);
+          // System.out.println("Send Output:");
           // DataInputStream input = new DataInputStream(client.getInputStream());
           // System.out.println("Request des Clients" + input.readUTF());
 
@@ -74,7 +73,7 @@ public class WebServer {
       }
     }
   }
-  
+
   private static String getLocalIp() throws SocketException {
     String localIp = null;
     String address;
@@ -132,20 +131,20 @@ public class WebServer {
 
   private static void handleClient(Socket client) throws IOException {
     System.out.println("Debug: got new client " + client.toString());
-    DataInputStream dis = new DataInputStream(client.getInputStream());
-    // BufferedReader br = new BufferedReader(
-    //   new InputStreamReader(client.getInputStream())
-    // );
+    // DataInputStream dis = new DataInputStream(client.getInputStream());
+    BufferedReader br = new BufferedReader(
+      new InputStreamReader(client.getInputStream())
+    );
 
-    // StringBuilder requestBuilder = new StringBuilder();
-    // String line;
-    // while (!(line = br.readLine()).isBlank()) {
-    //   requestBuilder.append(line + "\r\n");
-    // }
+    StringBuilder requestBuilder = new StringBuilder();
+    String line;
+    while (!(line = br.readLine()).isBlank()) {
+      requestBuilder.append(line + "\r\n");
+    }
 
-    // String request = requestBuilder.toString();
+    String request = requestBuilder.toString();
     //TODO: dataInputStream dis in httpRequest aufschlüsseln (deseriealizen)
-    String request = dis.readUTF();
+    // String request = dis.readUTF();
     String[] requestsLines = request.split("\r\n");
     String[] requestLine = requestsLines[0].split(" ");
     String method = requestLine[0];
@@ -180,9 +179,6 @@ public class WebServer {
       byte[] notFoundContent = "<h1>Not found :(</h1>".getBytes();
       sendResponse(client, "404 Not Found", "text/html", notFoundContent);
     }
-
-    String request = requestBuilder.toString();
-    System.out.println(request);
   }
 
   private static void sendResponse(
