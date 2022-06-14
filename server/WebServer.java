@@ -54,6 +54,8 @@ public class WebServer {
           // );
 
           handleClient(client);
+          System.out.println("Send Output:");
+          sendOutput(client);
           // DataInputStream input = new DataInputStream(client.getInputStream());
           // System.out.println("Request des Clients" + input.readUTF());
 
@@ -72,7 +74,7 @@ public class WebServer {
       }
     }
   }
-
+  
   private static String getLocalIp() throws SocketException {
     String localIp = null;
     String address;
@@ -178,6 +180,9 @@ public class WebServer {
       byte[] notFoundContent = "<h1>Not found :(</h1>".getBytes();
       sendResponse(client, "404 Not Found", "text/html", notFoundContent);
     }
+
+    String request = requestBuilder.toString();
+    System.out.println(request);
   }
 
   private static void sendResponse(

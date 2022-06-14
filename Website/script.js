@@ -8,20 +8,20 @@ $(document).ready(async function () {
 
     initializeWebsocket(createRequest);
   });
-  $('input').each(function () {
+  $("input").each(function () {
     var input = this; // This is the jquery object of the input, do what you will
-    input.addEventListener('input', resizeInput); // bind the "resizeInput" callback on "input" event
+    input.addEventListener("input", resizeInput); // bind the "resizeInput" callback on "input" event
     resizeInput.call(input); // immediately call the function
   });
 
   function resizeInput() {
     if (this.value.length == 0) {
-      this.style.width = this.placeholder.length + 'ch';
+      this.style.width = this.placeholder.length + "ch";
     } else {
-      this.style.width = this.value.length + 'ch';
+      this.style.width = this.value.length + "ch";
     }
     //console.log($("#containerHTML")[0], $("#outterWrapper")[0].clientWidth);
-    $('#containerHTML')[0].clientWidth = $('#outterWrapper')[0].clientWidth;
+    $("#containerHTML")[0].clientWidth = $("#outterWrapper")[0].clientWidth;
     //console.log($("#containerHTML")[0].style.width, $("#outterWrapper"));
   }
   function createRequest(method, path, urlInput, protocol, accept, format) {
@@ -31,7 +31,7 @@ $(document).ready(async function () {
       urlInput: urlInput,
       protocol: protocol,
       accept: accept,
-      format: format
+      format: format,
     };
     return JSON.stringify(combined);
   }
