@@ -46,7 +46,6 @@ public class WebServer {
             "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
           );
           
-
           handleClient(client);
           System.out.println("Send Output:");
           sendOutput(client);
@@ -62,7 +61,7 @@ public class WebServer {
           //   // " Verbunden\n Antwort auf Ihren request:\n" +
           //   constructJson(people);
           // output.writeUTF(httpResponse);
-
+          
           // client.close();
         }
       }
@@ -82,7 +81,7 @@ public class WebServer {
         InetAddress i = inetAddresses.nextElement();
         address = i.getHostAddress();
         split = address.split("\\.");
-        if (split[0].equals("192") || split[0].equals("10")) {
+        if (split[0].equals("192") || split[0].equals("10")|| split[0].equals("141")) {
           localIp = address;
           break;
         }

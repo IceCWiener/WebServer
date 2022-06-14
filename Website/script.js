@@ -12,16 +12,27 @@ $(document).ready(function () {
       createRequest(method, path, urlInput, protocol, accept, format)
     );
     $("#containerHTML").removeClass("disabled");
+    
     var url = new URL("ws://" + urlInput + ":8080");
+    
     console.log(url);
     var socket = new WebSocket(url);
-    socket.onopen = (e) => {
+    console.log("socket:" + socket);
+
+    
+    console.log(socket.data)
+
+    socket.onopen = function (e){
       open = true;
-      console.log("moin");
+      console.log("test");
+      socket.send(
+        createRequest(method, path, urlInput, protocol, accept, format)
+      );
     };
-    socket.send(
-      createRequest(method, path, urlInput, protocol, accept, format)
-    );
+
+    socket.onmessage = function(ev){
+      alert(ev.data);
+    };
     
   });
   $("input").each(function () {
