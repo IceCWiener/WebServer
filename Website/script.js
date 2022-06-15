@@ -50,6 +50,20 @@ function initializeWebsocket(createRequest) {
   $('#containerHTML').removeClass('disabled');
   var url = new URL('ws://' + urlInput + ':8080');
   console.log(url);
+
+      // $.ajax({
+    //   url: 'http://' + urlInput + ':8080',
+    //   beforeSend: function(xhr) {
+    //        xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5")
+    //   }, success: function(data){
+    //     var wrapper= document.createElement('div');
+    //     wrapper.innerHTML= data;
+    //     var div= wrapper.firstChild;
+    //     console.log
+    //     $("#containerHTML").append(div);
+    //   }
+    // })
+
   var socket = new WebSocket(url);
   socket.onopen = e => {
     open = true;
