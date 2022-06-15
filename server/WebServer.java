@@ -133,7 +133,7 @@ public class WebServer {
     System.out.println("Debug: got new client " + client.toString());
     // DataInputStream dis = new DataInputStream(client.getInputStream());
     BufferedReader br = new BufferedReader(
-      new InputStreamReader(client.getInputStream())
+      new InputStreamReader(client.getInputStream(), "utf-8")
     );
 
     StringBuilder requestBuilder = new StringBuilder();
