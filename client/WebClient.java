@@ -15,7 +15,7 @@ public class WebClient {
     String hostname;
 
     if (args.length < 1) {
-      hostname = "192.168.0.24";
+      hostname = "141.45.47.129";
     } else {
       hostname = args[0];
     }
