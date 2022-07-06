@@ -65,7 +65,15 @@ public class WebServer {
       }
 
 
-    } else if (method == "GET") {
+    } else if (method.equals("GET")) {
+      StringBuilder content =new StringBuilder();
+      String line;
+      while ((line = br.readLine()) != null) {
+        content.append(line);
+        content.append(System.lineSeparator());
+        String message = content.toString();
+        System.out.println(message);
+      }
       // TODO
 
     }
