@@ -54,20 +54,36 @@ public class WebServer {
   private static void receiveRequest(Socket client) throws IOException {
     // System.out.println("Debug: got new client " + client.toString());
     BufferedReader br = new BufferedReader(
-      new InputStreamReader(client.getInputStream())
-    );
-
-    StringBuilder requestBuilder = new StringBuilder();
-    String line;
-    if (br.readLine() != null) {
-      while (!(line = br.readLine()).isBlank()) {
-        requestBuilder.append(line + "\r\n");
+      new InputStreamReader(client.getInputStream()));
+      String request = br.readLine(); // Now you get GET index.html HTTP/1.1
+      String[] requestParam = request.split(" ");
+      String method = requestParam[0];
+      String path = requestParam[1];
+      if (method.equals("POST")) {
+        StringBuilder content =new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+          content.append(line);
+          content.append(System.lineSeparator());
+          String message = content.toString();
+          System.out.println(message);
+        }
+  
+  
+      } else if (method.equals("GET")) {
+        StringBuilder content =new StringBuilder();
+        String line = "";
+        while ((line = br.readLine()) != null) {
+            content.append(line);
+            content.append(System.lineSeparator());
+            line = line + content.toString();
+            System.out.println(line);
+        }
+        // TODO
+  
       }
     }
-
-    String request = requestBuilder.toString();
-    System.out.println("Request from the client inputstream:\n\r" + request);
-  }
+    
 
   public static void sendResponse(Socket client) throws IOException {
     OutputStream clientOutput = client.getOutputStream();
