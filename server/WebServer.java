@@ -33,6 +33,7 @@ public class WebServer {
   private static Gson gson = new Gson();
 
   public static void main(String args[]) throws IOException {
+    // readFile(".\\files\\person1.txt");
     try (ServerSocket server = new ServerSocket(8080)) {
       System.out.println(
         "Listening for connection on:\n " +
@@ -61,18 +62,19 @@ public class WebServer {
     String request = br.readLine(); // Now you get GET index.html HTTP/1.1
     String[] requestParam = request.split(" ");
     String method = requestParam[0];
-    String path = requestParam[1];
+    String path = "." + requestParam[1];
     if (method.equals("POST")) {
       StringBuilder content = new StringBuilder();
       String line;
       String message = "";
-      while ((line = br.readLine()) != null) {
+      while ((line = br.readLine()) != null && line.length() > 0) {
         content.append(line);
         content.append(System.lineSeparator());
         message = content.toString();
-        System.out.println(message);
       }
-
+      
+      // System.out.println(message);
+      // String[] pruned = message.split("\n");
       createFile(message);
       sendResponse(client, "Inhalte wurden gespeichert.");
     } else if (method.equals("GET")) {
@@ -81,10 +83,26 @@ public class WebServer {
     }
   }
 
-  public static void sendResponse(Socket client, String response)
+  public static void sendResponse(Socket client, String body)
     throws IOException {
     OutputStream clientOutput = client.getOutputStream();
-    clientOutput.write(response.getBytes());
+
+    clientOutput.write("HTTP/1.1 200 OK".getBytes());
+    // clientOutput.write("Date: Mon, 27 Jul 2009 12:28:53 GMT".getBytes());
+    // clientOutput.write("Server: Apache/2.2.14 (Win32)".getBytes());
+    // clientOutput.write("Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT".getBytes());
+    // clientOutput.write("Content-Length: 88".getBytes());
+    clientOutput.write("Content-Type: text/html\r\n".getBytes());
+    // clientOutput.write("\n".getBytes());
+    // clientOutput.write("test".getBytes());
+    
+    // clientOutput.write("HTTP/1.1 200 OK\r\n".getBytes());
+    // clientOutput.write(("ContentType: text/html\r\n").getBytes());
+    clientOutput.write("\r\n".getBytes());
+    clientOutput.write(body.getBytes());
+    // clientOutput.write(html.getBytes());
+    clientOutput.write("\r\n\r\n".getBytes());
+    clientOutput.write("Connection: Closed\r\n".getBytes());
   }
 
   private static String getLocalIp() throws SocketException {
@@ -139,7 +157,7 @@ public class WebServer {
   }
 
   private static void createFile(String text) {
-    String name = "person" + (new File(".\\files").list().length + 1);
+    String name = "file" + (new File(".\\files").list().length + 1);
 
     try {
       File file = new File(".//files//" + name + ".txt");
@@ -164,7 +182,7 @@ public class WebServer {
       Scanner sc = new Scanner(file);
       while (sc.hasNextLine()) {
         content = content + sc.nextLine();
-        System.out.println(content);
+        // System.out.println(content);
       }
       sc.close();
     } catch (FileNotFoundException error) {
