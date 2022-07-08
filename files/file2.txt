@@ -1,0 +1,30 @@
+User-Agent: PostmanRuntime/7.29.0
+Accept: */*
+Postman-Token: ad578c32-e6e7-4495-8d7c-4a5751246f88
+Host: 192.168.0.17:8080
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 603
+
+{
+    "glossary": {
+        "title": "example glossary",
+		"GlossDiv": {
+            "title": "S",
+			"GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+					"SortAs": "SGML",
+					"GlossTerm": "Standard Generalized Markup Language",
+					"Acronym": "SGML",
+					"Abbrev": "ISO 8879:1986",
+					"GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+						"GlossSeeAlso": ["GML", "XML"]
+                    },
+					"GlossSee": "markup"
+                }
+            }
+        }
+    }
+}
