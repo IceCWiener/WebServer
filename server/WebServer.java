@@ -16,6 +16,9 @@ import java.net.SocketException;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -65,14 +68,27 @@ public class WebServer {
       StringBuilder content = new StringBuilder();
       String line = br.readLine();
       String message = "";
-      while (((line = br.readLine()) != null /*&& line.length() > 0*/)) {
-        // while (!line.equals("}") && /*(line = br.readLine()) != null &&*/
-        // !line.equals("\n\r")){
-        content.append(line);
-        content.append(System.lineSeparator());
-        message = content.toString();
-      }
 
+      // Scannertest
+      // Scanner sc = new Scanner(client.getInputStream());
+      // while(sc.hasNext()){
+      // content.append(sc.next());
+      // content.append(System.lineSeparator());
+      // message = content.toString();
+      // }
+      // sc.close();
+
+      // // BufferedReader
+      // for (int i = 0; i < 8; i++) {
+      // br.readLine();
+      // }
+      // while (((line = br.readLine()) != null)) {
+      // content.append(line);
+      // content.append(System.lineSeparator());
+      // message = content.toString();
+      // }
+
+      message = readAllLinesWithStream(br);
       // System.out.println(message);
       // String[] pruned = message.split("\n");
       createFile(message);
@@ -81,6 +97,10 @@ public class WebServer {
       String content = readFile(path);
       sendResponse(client, content);
     }
+  }
+
+  private static String readAllLinesWithStream(BufferedReader br) {
+    return br.lines().collect(Collectors.joining(System.lineSeparator()));
   }
 
   public static void sendResponse(Socket client, String body)
