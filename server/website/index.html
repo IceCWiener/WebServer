@@ -115,13 +115,67 @@
                 <!--<option value='' disabled selected>GET</option>-->
                 <option value='GET'>GET</option>
                 <option value='POST'>POST</option>
-                <option value='PUT'>PUT</option>
-                <option value='DELETE'>DELETE</option>
+                <option value='POST'>PUT</option>
+                <option value='POST'>DELETE</option>
               </select>
             </div>
-            <div id="containerHTML" class="disabled"></div>
+            <div class='rowElement'>
+              <h1>Path:</h1>
+              <input type='text' placeholder='/<your Path>' id='pathInput' />
+            </div>
+          </div>
+          <div class='rows'>
+            <div class='rowElement'>
+              <h1>Host:</h1>
+              <input type='text' id='host' placeholder='enter URL' />
+            </div>
+            <div class='rowElement'>
+              <h1>Protocol:</h1>
+              <input type='text' value='HTTP/1.1' id='protocolInput' disabled />
+            </div>
+          </div>
+          <div class='rows'>
+            <div class='rowElement'>
+              <h1>Accept:</h1>
+              <input
+                type='text'
+                value='application/'
+                id='acceptInput'
+                disabled
+              />
+            </div>
+            <div class='rowElement'>
+              <h1>Format:</h1>
+              <select id='jsonXML'>
+                <option value='json'>JSON</option>
+                <option value='xml'>XML</option>
+              </select>
+            </div>
+            <div class='rowElement'>
+              <h1 class='empty'></h1>
+              <button id='button'>GO</button>
+            </div>
+          </div>
         </div>
-        
+      </div>
+      <div id='containerHTML' class='disabled'></div>
+    </div>
+  </body>
+  <script type='text/javascript'>
+    $(document).ready(function () {
+      console.log('stop inspecting element');
+      $('#button').on('click', function () {
+        var method = document.getElementById('Methods').value;
+        var path = document.getElementById('pathInput').value;
+        var protocol = document.getElementById('protocolInput').value;
+        var accept = document.getElementById('acceptInput').value;
+        var format = document.getElementById('jsonXML').value;
+        var urlInput = document.getElementById('host').value;
+        document.getElementById('containerHTML').focus();
+        $('#containerHTML').text(
+          createRequest(method, path, urlInput, protocol, accept, format)
+        );
+        $('#containerHTML').removeClass('disabled');
 
         var url = new URL('ws://' + urlInput + ':8080');
 

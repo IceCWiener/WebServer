@@ -2,8 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -12,69 +13,140 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
 /**
  * @author Gerasimos Strecker & Konstantin Regenhardt
  */
 
 public class WebServer {
-  private static Person person1 = new Person("Claudia", 44);
-  private static Person person2 = new Person("Clarence", 63);
-  private static Person[] people = { person1, person2 };
-  private static String ip = "localhost";
+  private static Gson gson = new Gson();
 
   public static void main(String args[]) throws IOException {
     try (ServerSocket server = new ServerSocket(8080)) {
       System.out.println(
-        "Listening for connection on:\n " +
-        getLocalIp() +
-        ":" +
-        server.getLocalPort()
-      );
+          "Listening for connection on:\n " +
+              getLocalIp() +
+              ":" +
+              server.getLocalPort());
+
       while (true) {
         try (Socket client = server.accept()) {
-          if (client.isConnected()) {}
-          // Date today = new Date();
-          // System.out.println(
-          //   "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
-          // );
+          System.out.println("\nVerbundener Client: " + client.toString());
+          receiveRequest(client);
 
-          handleClient(client);
-          System.out.println("Send Output:");
-          sendOutput(client);
-          // DataInputStream input = new DataInputStream(client.getInputStream());
-          // System.out.println("Request des Clients" + input.readUTF());
-
-          // DataOutputStream output = new DataOutputStream(
-          //   client.getOutputStream()
-          // );
-          // String httpResponse =
-          //   // "Sie haben sich mit dem Server um " +
-          //   // today +
-          //   // " Verbunden\n Antwort auf Ihren request:\n" +
-          //   constructJson(people);
-          // output.writeUTF(httpResponse);
-
-          // client.close();
+          client.close();
         }
       }
     }
   }
-  
+
+  private static void receiveRequest(Socket client) throws IOException {
+    BufferedReader br = new BufferedReader(
+        new InputStreamReader(client.getInputStream()));
+    String request = br.readLine();
+    String[] requestParam = request.split(" ");
+    String method = requestParam[0];
+    String path = "." + requestParam[1];
+    if (method.equals("POST")) {
+      StringBuilder content = new StringBuilder();
+      String line = br.readLine();
+      String message = "";
+
+      // Br with curly counter //Body needs empty line at he end
+      for (int i = 0; i < 8; i++) {
+        br.readLine();
+      }
+      int count1 = 0;
+      int count2 = 0;
+
+      while (((line = br.readLine()) != null)) {
+        String str = line.toString();
+        if (str.contains("{")) {
+          count1++;
+        }
+        if (str.contains("}")) {
+          count2++;
+        }
+        if (count1 == count2) {
+          content.append(line);
+          content.append(System.lineSeparator());
+          message = content.toString();
+          break;
+        }
+        content.append(line);
+        content.append(System.lineSeparator());
+        message = content.toString();
+      }
+
+      String name = createFile(message);
+      sendResponse(client, "Inhalte wurden gespeichert in: " + name);
+    } else if (method.equals("GET")) {
+      String content = readFile(path);
+      sendResponse(client, content);
+    }
+  }
+
+  private static String createFile(String text) {
+    String name = "file" + (new File(".\\files").list().length + 1);
+
+    try {
+      File file = new File(".//files//" + name + ".txt");
+      if (file.createNewFile()) {
+        System.out.println("Neuen Eintrag erstellt: " + file.getName());
+      } else {
+        System.out.println("Dateiname schon vergeben.");
+      }
+
+      FileWriter writer = new FileWriter(file);
+      writer.write(text);
+      writer.close();
+    } catch (IOException error) {
+      System.out.println("IOError:\n" + error);
+    }
+
+    return name + ".txt";
+  }
+
+  public static void sendResponse(Socket client, String body)
+      throws IOException {
+    OutputStream clientOutput = client.getOutputStream();
+
+    clientOutput.write("HTTP/1.1 200 OK".getBytes());
+    clientOutput.write("Content-Type: text/plain\r\n".getBytes());
+    clientOutput.write("\r\n".getBytes());
+    clientOutput.write(body.getBytes());
+    clientOutput.write("\r\n\r\n".getBytes());
+    clientOutput.write("Connection: Closed\r\n".getBytes());
+  }
+
+  private static String readFile(String path) {
+    String content = "";
+    try {
+      File file = new File(path);
+      Scanner sc = new Scanner(file);
+      while (sc.hasNextLine()) {
+        content = content + sc.nextLine();
+        // System.out.println(content);
+      }
+      sc.close();
+    } catch (FileNotFoundException error) {
+      System.out.println("Pfad wurde nicht gefunden.");
+      // error.printStackTrace();
+    }
+
+    return content;
+  }
+
   private static String getLocalIp() throws SocketException {
     String localIp = null;
     String address;
@@ -88,11 +160,9 @@ public class WebServer {
         InetAddress i = inetAddresses.nextElement();
         address = i.getHostAddress();
         split = address.split("\\.");
-        if (
-          split[0].equals("192") ||
-          split[0].equals("10") ||
-          split[0].equals("141")
-        ) {
+        if (split[0].equals("192") ||
+            split[0].equals("10") ||
+            split[0].equals("141")) {
           localIp = address;
           break;
         }
@@ -110,6 +180,7 @@ public class WebServer {
     String msgJson = gson.toJson(msg);
     String peopleJson = gson.toJson(people);
     String json = gson.toJson(peopleJson + ", " + msgJson);
+
     return json;
   }
 
@@ -119,98 +190,18 @@ public class WebServer {
 
   public Response createHttpResponse() throws IOException {
     OkHttpClient client = new OkHttpClient().newBuilder().build();
-    MediaType mediaType = MediaType.parse("text/html");
+    MediaType mediaType = MediaType.parse("text/plain");
     RequestBody body = RequestBody.create("message", mediaType);
     Request request = new Request.Builder()
-      .url(ip + ":8080")
-      .method("POST", body)
-      .build();
+        .url("192.168.0.24:8080")
+        .method("POST", body)
+        .build();
     Response response = client.newCall(request).execute();
 
     return response;
   }
 
-  private static void handleClient(Socket client) throws IOException {
-    System.out.println("Debug: got new client " + client.toString());
-    DataInputStream dis = new DataInputStream(client.getInputStream());
-    // BufferedReader br = new BufferedReader(
-    //   new InputStreamReader(client.getInputStream())
-    // );
-
-    // StringBuilder requestBuilder = new StringBuilder();
-    // String line;
-    // while (!(line = br.readLine()).isBlank()) {
-    //   requestBuilder.append(line + "\r\n");
-    // }
-
-    // String request = requestBuilder.toString();
-    //TODO: dataInputStream dis in httpRequest aufschlüsseln (deseriealizen)
-    String request = dis.readUTF();
-    String[] requestsLines = request.split("\r\n");
-    String[] requestLine = requestsLines[0].split(" ");
-    String method = requestLine[0];
-    String path = requestLine[1];
-    String version = requestLine[2];
-    String host = requestsLines[1].split(" ")[1];
-
-    List<String> headers = new ArrayList<>();
-    for (int h = 2; h < requestsLines.length; h++) {
-      String header = requestsLines[h];
-      headers.add(header);
-    }
-
-    String accessLog = String.format(
-      "client: %s,\n method: %s,\n path: %s,\n version: %s,\n host: %s,\n headers: %s",
-      client.toString(),
-      method,
-      path,
-      version,
-      host,
-      headers.toString()
-    );
-    System.out.println(accessLog);
-
-    Path filePath = getFilePath(path);
-    if (Files.exists(filePath)) {
-      // file exist
-      String contentType = guessContentType(filePath);
-      sendResponse(client, "200 OK", contentType, Files.readAllBytes(filePath));
-    } else {
-      // 404
-      byte[] notFoundContent = "<h1>Not found :(</h1>".getBytes();
-      sendResponse(client, "404 Not Found", "text/html", notFoundContent);
-    }
-
-    String request = requestBuilder.toString();
-    System.out.println(request);
-  }
-
-  private static void sendResponse(
-    Socket client,
-    String status,
-    String contentType,
-    byte[] content
-  )
-    throws IOException {
-    OutputStream clientOutput = client.getOutputStream();
-    clientOutput.write(("HTTP/1.1 \r\n" + status).getBytes());
-    clientOutput.write(("ContentType: " + contentType + "\r\n").getBytes());
-    clientOutput.write("\r\n".getBytes());
-    clientOutput.write(content);
-    clientOutput.write("\r\n\r\n".getBytes());
-    clientOutput.flush();
-    client.close();
-  }
-
-  private static String guessContentType(Path filePath) throws IOException {
-    return Files.probeContentType(filePath);
-  }
-
-  private static Path getFilePath(String path) {
-    if ("/".equals(path)) {
-      path = "/index.html";
-    }
-
-    return Paths.get("/website", path);
+  private static String readAllLinesWithStream(BufferedReader br) {
+    return br.lines().collect(Collectors.joining(System.lineSeparator()));
   }
 }
