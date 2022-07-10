@@ -83,6 +83,16 @@ public class WebServer {
       // sc.close();
 
       // BufferedReader // only works with an empty line at the end of msg
+      // for (int i = 0; i < 8; i++) {
+      //   br.readLine();
+      // }
+      // while ((!(line = br.readLine()).isEmpty())) {
+      //   content.append(line);
+      //   content.append(System.lineSeparator());
+      //   message = content.toString();
+      // }
+
+      // Br with curly counter
       for (int i = 0; i < 8; i++) {
         br.readLine();
       }
