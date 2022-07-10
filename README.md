@@ -1,6 +1,7 @@
 # WebServer
 Studenten Projekt mit einem simplen webserver und integrierter RESTapi
 ## @autoren Gerasimos Strecker and Konstantin Regenhardt
+-Unsere Arbeit kann man schön Visualisiert in der Datei GitHub.mp4 sehen-
 *Als client sowie für Testzwecke wurde "Postman" benutzt, owbohl es auch mit CURL funktionieren sollte*
 
 Funktionsweise (Erklärt an Postman):
