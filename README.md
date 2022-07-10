@@ -14,4 +14,4 @@ Funktionsweise (Erklärt an Postman):
   - Für POST bei Postman dieses Format benutzen: IP+Port
     - Wenn eine Json Datei geschickt werden soll muss diese in den Body gespeichert werden im Format *raw*
     - Wenn eigene Json benutzt werden soll muss eine Leere Zeile am Ende sein
-    - Benutztes Beispiel von uns ist in der Datei BeispielJson.txt
+    - Benutztes Beispiel von uns ist in der Datei **BeispielJson.txt**
