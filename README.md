@@ -19,11 +19,11 @@ Funktionsweise (Erklärt an Postman):
     - Benutztes Beispiel zwischen den <>:\
     
     <\
-    {\
-    "glossary": {\
-        "title": "example glossary",\
-		"GlossDiv": {\
-            "title": "S",\
+        {\
+        "glossary": {\
+            "title": "example glossary",\
+		    "GlossDiv": {\
+                "title": "S",\
 			"GlossList": {\
                 "GlossEntry": {\
                     "ID": "SGML",\
