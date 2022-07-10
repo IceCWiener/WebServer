@@ -13,41 +13,22 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-<<<<<<< HEAD
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-=======
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
->>>>>>> file-read-write
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
 /**
  * @author Gerasimos Strecker & Konstantin Regenhardt
  */
 
 public class WebServer {
-<<<<<<< HEAD
-  private static Person person1 = new Person("Claudia", 44);
-  private static Person person2 = new Person("Clarence", 63);
-  private static Person[] people = { person1, person2 };
-  private static String ip = "localhost";
-=======
   private static Gson gson = new Gson();
->>>>>>> file-read-write
 
   public static void main(String args[]) throws IOException {
     try (ServerSocket server = new ServerSocket(8080)) {
@@ -60,15 +41,19 @@ public class WebServer {
       while (true) {
         try (Socket client = server.accept()) {
 <<<<<<< HEAD
+          System.out.println("\nVerbundener Client: " + client.toString());
+          receiveRequest(client);
+
+          client.close();
+=======
           if (client.isConnected()) {}
           // Date today = new Date();
-          // System.out.println(
-          //   "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
-          // );
+          System.out.println(
+            "\nVerbundener Client: " + client.getInetAddress().getHostAddress()
+          );
 
           handleClient(client);
-          System.out.println("Send Output:");
-          sendOutput(client);
+          // System.out.println("Send Output:");
           // DataInputStream input = new DataInputStream(client.getInputStream());
           // System.out.println("Request des Clients" + input.readUTF());
 
@@ -83,17 +68,13 @@ public class WebServer {
           // output.writeUTF(httpResponse);
 
           // client.close();
-=======
-          System.out.println("\nVerbundener Client: " + client.toString());
-          receiveRequest(client);
-
-          client.close();
->>>>>>> file-read-write
+>>>>>>> e0a98ac65d551103f36954d53f23bed713bbccd6
         }
       }
     }
   }
 
+<<<<<<< HEAD
   private static void receiveRequest(Socket client) throws IOException {
     BufferedReader br = new BufferedReader(
         new InputStreamReader(client.getInputStream()));
@@ -191,6 +172,8 @@ public class WebServer {
     return content;
   }
 
+=======
+>>>>>>> e0a98ac65d551103f36954d53f23bed713bbccd6
   private static String getLocalIp() throws SocketException {
     String localIp = null;
     String address;
@@ -204,17 +187,9 @@ public class WebServer {
         InetAddress i = inetAddresses.nextElement();
         address = i.getHostAddress();
         split = address.split("\\.");
-<<<<<<< HEAD
-        if (
-          split[0].equals("192") ||
-          split[0].equals("10") ||
-          split[0].equals("141")
-        ) {
-=======
         if (split[0].equals("192") ||
             split[0].equals("10") ||
             split[0].equals("141")) {
->>>>>>> file-read-write
           localIp = address;
           break;
         }
@@ -237,40 +212,37 @@ public class WebServer {
 
   public Response createHttpResponse() throws IOException {
     OkHttpClient client = new OkHttpClient().newBuilder().build();
-    MediaType mediaType = MediaType.parse("text/html");
+    MediaType mediaType = MediaType.parse("text/plain");
     RequestBody body = RequestBody.create("message", mediaType);
     Request request = new Request.Builder()
-<<<<<<< HEAD
-      .url(ip + ":8080")
-      .method("POST", body)
-      .build();
-=======
         .url("192.168.0.24:8080")
         .method("POST", body)
         .build();
->>>>>>> file-read-write
     Response response = client.newCall(request).execute();
 
     return response;
   }
 
 <<<<<<< HEAD
+  private static String readAllLinesWithStream(BufferedReader br) {
+    return br.lines().collect(Collectors.joining(System.lineSeparator()));
+=======
   private static void handleClient(Socket client) throws IOException {
     System.out.println("Debug: got new client " + client.toString());
-    DataInputStream dis = new DataInputStream(client.getInputStream());
-    // BufferedReader br = new BufferedReader(
-    //   new InputStreamReader(client.getInputStream())
-    // );
+    // DataInputStream dis = new DataInputStream(client.getInputStream());
+    BufferedReader br = new BufferedReader(
+      new InputStreamReader(client.getInputStream(), "utf-8")
+    );
 
-    // StringBuilder requestBuilder = new StringBuilder();
-    // String line;
-    // while (!(line = br.readLine()).isBlank()) {
-    //   requestBuilder.append(line + "\r\n");
-    // }
+    StringBuilder requestBuilder = new StringBuilder();
+    String line;
+    while (!(line = br.readLine()).isBlank()) {
+      requestBuilder.append(line + "\r\n");
+    }
 
-    // String request = requestBuilder.toString();
+    String request = requestBuilder.toString();
     //TODO: dataInputStream dis in httpRequest aufschlüsseln (deseriealizen)
-    String request = dis.readUTF();
+    // String request = dis.readUTF();
     String[] requestsLines = request.split("\r\n");
     String[] requestLine = requestsLines[0].split(" ");
     String method = requestLine[0];
@@ -305,9 +277,6 @@ public class WebServer {
       byte[] notFoundContent = "<h1>Not found :(</h1>".getBytes();
       sendResponse(client, "404 Not Found", "text/html", notFoundContent);
     }
-
-    String request = requestBuilder.toString();
-    System.out.println(request);
   }
 
   private static void sendResponse(
@@ -325,10 +294,6 @@ public class WebServer {
     clientOutput.write("\r\n\r\n".getBytes());
     clientOutput.flush();
     client.close();
-=======
-  private static String readAllLinesWithStream(BufferedReader br) {
-    return br.lines().collect(Collectors.joining(System.lineSeparator()));
->>>>>>> file-read-write
   }
 
   private static String guessContentType(Path filePath) throws IOException {
@@ -341,5 +306,6 @@ public class WebServer {
     }
 
     return Paths.get("/website", path);
+>>>>>>> e0a98ac65d551103f36954d53f23bed713bbccd6
   }
 }

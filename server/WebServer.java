@@ -13,6 +13,11 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -22,6 +27,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 /**
  * @author Gerasimos Strecker & Konstantin Regenhardt
@@ -175,11 +182,16 @@ public class WebServer {
   }
 
   public static String constructJson(Person[] people, String... msg) {
+    Gson gson = new Gson();
     String msgJson = gson.toJson(msg);
     String peopleJson = gson.toJson(people);
     String json = gson.toJson(peopleJson + ", " + msgJson);
 
     return json;
+  }
+
+  public String receiveRequest(String json) {
+    return "";
   }
 
   public Response createHttpResponse() throws IOException {
