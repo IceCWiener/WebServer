@@ -19,12 +19,11 @@ Funktionsweise (Erklärt an Postman):
     - Benutztes Beispiel zwischen den <>:
    
 <
-<script>
     {
     "glossary": {
         "title": "example glossary",
-		    "GlossDiv": {
-                "title": "S",
+		"GlossDiv": {
+            "title": "S",
 			"GlossList": {
                 "GlossEntry": {
                     "ID": "SGML",
@@ -41,9 +40,8 @@ Funktionsweise (Erklärt an Postman):
             }
         }
     }
-    }
+}
 
-</script>
-    >
+>
 
 
