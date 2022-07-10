@@ -16,6 +16,11 @@ import java.net.SocketException;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -47,7 +52,6 @@ public class WebServer {
       while (true) {
         try (Socket client = server.accept()) {
           System.out.println("\nVerbundener Client: " + client.toString());
-
           receiveRequest(client);
 
           client.close();
@@ -78,19 +82,36 @@ public class WebServer {
       // }
       // sc.close();
 
-      // // BufferedReader
-      // for (int i = 0; i < 8; i++) {
-      // br.readLine();
-      // }
-      // while (((line = br.readLine()) != null)) {
-      // content.append(line);
-      // content.append(System.lineSeparator());
-      // message = content.toString();
+      // BufferedReader // only works with an empty line at the end of msg
+      for (int i = 0; i < 8; i++) {
+        br.readLine();
+      }
+      while ((!(line = br.readLine()).isEmpty())) {
+        content.append(line);
+        content.append(System.lineSeparator());
+        message = content.toString();
+      }
+
+      // Collection reader
+      // message = readAllLinesWithStream(br);
+
+      // Timout test
+      // Future<String> future = CompletableFuture.supplyAsync(() ->
+      // readAllLinesWithStream(br));
+      // String msg = "";
+      // try{
+      // msg = future.get(1, TimeUnit.SECONDS);
+      // createFile(msg);
+      // } catch(TimeoutException e) {
+      // System.out.println("Timeout of method");
+      // future.cancel(true);
+      // } catch(InterruptedException | ExecutionException e) {
+      // System.out.println(e);
       // }
 
-      message = readAllLinesWithStream(br);
       // System.out.println(message);
       // String[] pruned = message.split("\n");
+
       createFile(message);
       sendResponse(client, "Inhalte wurden gespeichert.");
     } else if (method.equals("GET")) {
@@ -113,7 +134,7 @@ public class WebServer {
     // clientOutput.write("Last-Modified: Wed, 22 Jul 2009 19:15:56
     // GMT".getBytes());
     // clientOutput.write("Content-Length: 88".getBytes());
-    clientOutput.write("Content-Type: text/html\r\n".getBytes());
+    clientOutput.write("Content-Type: text/plain\r\n".getBytes());
     // clientOutput.write("\n".getBytes());
     // clientOutput.write("test".getBytes());
 
