@@ -77,6 +77,9 @@ public class WebServer {
           count2++;
         }
         if (count1 == count2) {
+          content.append(line);
+          content.append(System.lineSeparator());
+          message = content.toString();
           break;
         }
         content.append(line);
@@ -84,15 +87,15 @@ public class WebServer {
         message = content.toString();
       }
 
-      createFile(message);
-      sendResponse(client, "Inhalte wurden gespeichert.");
+      String name = createFile(message);
+      sendResponse(client, "Inhalte wurden gespeichert in: " + name);
     } else if (method.equals("GET")) {
       String content = readFile(path);
       sendResponse(client, content);
     }
   }
 
-  private static void createFile(String text) {
+  private static String createFile(String text) {
     String name = "file" + (new File(".\\files").list().length + 1);
 
     try {
@@ -109,6 +112,8 @@ public class WebServer {
     } catch (IOException error) {
       System.out.println("IOError:\n" + error);
     }
+
+    return name + ".txt";
   }
 
   public static void sendResponse(Socket client, String body)
