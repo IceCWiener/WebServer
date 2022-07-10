@@ -18,10 +18,10 @@ Funktionsweise (Erklärt an Postman):
 
     - Benutztes Beispiel zwischen den <>:\
     
-    <\
-        {\
-        "glossary": {\
-            "title": "example glossary",\
+<\
+    {\
+    "glossary": {\
+        "title": "example glossary",\
 		    "GlossDiv": {\
                 "title": "S",\
 			"GlossList": {\
@@ -42,6 +42,6 @@ Funktionsweise (Erklärt an Postman):
     }\
     }\
 
-    >\'''
+    >\
 
 
