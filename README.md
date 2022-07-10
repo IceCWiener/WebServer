@@ -18,7 +18,7 @@ Funktionsweise (Erklärt an Postman):
 
     - Benutztes Beispiel zwischen den <>:\
     
-<\
+'''<\
 {\
     "glossary": {\
         "title": "example glossary",\
@@ -42,6 +42,6 @@ Funktionsweise (Erklärt an Postman):
     }\
 }\
 
->\
+>\'''
 
 
